@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RISK</title>
+     <style>
+ body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;     /* horizontal center */
+    justify-content: center; /* vertical center */
+    min-height: 100vh;
+    margin: 0;
+    background-image: url('BackImage.png');
+}
+button {
+    color: rgb(5, 81, 18);
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+#Player1Amount,
+#Player2Amount {
+    color: red; /* change P2 below */
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+#Player2Amount {
+    color: rgb(0, 17, 255);
+}
+ </style>
+</head>
+<body>
+ <h1>Attacker Army Size;</h1><input id="Player1Amount">
+ <h1>Defender Army Size;</h1><input id="Player2Amount">
+ <button id="Calculator">Calculate</button>
+<script>
+const player1Input = document.getElementById('Player1Amount');
+const player2Input = document.getElementById('Player2Amount');
+const CalButton = document.getElementById('Calculator');
+
+function rollDie() {
+    return Math.floor(Math.random() * 6) + 1;
+}
+
+function rollDice(amount) {
+    const rolls = [];
+    for (let i = 0; i < amount; i++) {
+        rolls.push(rollDie());
+    }
+    return rolls.sort((a, b) => b - a);
+}
+
+CalButton.addEventListener('click', function() {
+
+    let attacker = Number(player1Input.value);
+    let defender = Number(player2Input.value);
+
+    if (attacker < 1 || defender < 1) {
+        alert("Invalid army counts.");
+        return;
+    }
+
+    // Number of battle groups based on attacker size
+    const battleGroups = Math.ceil(attacker / 3);
+
+    while (attacker > 1 && defender > 0) {
+
+    const attackerDice = Math.min(3, attacker - 1);
+    const defenderDice = Math.min(2, defender);
+
+    const attackerRolls = rollDice(attackerDice);
+    const defenderRolls = rollDice(defenderDice);
+
+    const comparisons = Math.min(attackerDice, defenderDice);
+
+    for (let i = 0; i < comparisons; i++) {
+        if (attackerRolls[i] > defenderRolls[i]) {
+            defender--;
+        } else {
+            // Defender wins ties
+            attacker--;
+        }
+    }
+}
+    player1Input.value = attacker
+    player2Input.value = defender
+    alert(
+        "Segmented Battle Finished\n\n" +
+        "Attacker remaining: " + attacker + "\n" +
+        "Defender remaining: " + defender
+
+    );
+});
+</script>
+
+</body>
+</html>
